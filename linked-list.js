@@ -9,14 +9,11 @@ class LinkedList {
     constructor() {
         this.head = null;
         this.tail = null;
-		this.selected = null; // selected özelliği eklendi
-		this.shuffled = false; // shuffled özelliği eklendi, biri denk gelirse karıştırama için
-		this.correctPhotos = new Set(); // correctPhotos özelliği eklendi
+		this.selected = null; // selected özelliği eklendi		
 	}
 
     addPhoto(photo) {
         const node = new Node(photo);
-
         if (this.head === null) {
             this.head = node;
             this.tail = node;
@@ -37,26 +34,22 @@ class LinkedList {
         while (current !== null) {
             const img = document.createElement("img");
             img.src = current.data;
-
 			// Fotoğrafın tıklanma olayı eklendi
 			img.addEventListener("click", () => {
-				if (!this.correctPhotos.has(img.src)) { // Fotoğraf doğru yerde değilse işlem yap
-					if (this.selected === null) {
+               
+				  if (this.selected === null) {
 						this.selected = img;
-						img.classList.add("selected"); // Seçilen fotoğraf sarı çerçeveli hale getirildi
+						
 					} else {
 						const selectedImg = this.selected;
 						const temp = selectedImg.src;
 						selectedImg.src = img.src;
 						img.src = temp;
-						selectedImg.classList.remove("selected"); // Önceki seçili fotoğrafın sarı çerçevesi kaldırıldı
+						
 						this.selected = null;
 			
-						if (this.correctPhotos.size === 7) { // Tüm fotoğraflar doğru yerdeyse karıştırma işlemi iptal ediliyor
-							this.shuffled = true;
-						}
 					}
-				}
+                    
 			});
 
             const cell = document.createElement("td");
@@ -72,17 +65,13 @@ class LinkedList {
             current = current.next;
         }
 
-        if (count % 4 !== 0) {
-            table.appendChild(row);
-        }
-
         container.innerHTML = "";
         container.appendChild(table);
+
+        
     }
 
-    shufflePhotos() {
-					
-			
+    shufflePhotos() {		
 		let current = this.head;
 		let arr = [];
 			
@@ -108,60 +97,49 @@ class LinkedList {
 		}
 			
 		this.shuffled = true; // shuffled özelliği true olarak ayarlanıyor
-	}
-			
-	sortPhotos() {
-		let current = this.head;
-        let arr = [];
-
-        // Copying nodes to an array
-        while (current !== null) {
-            arr.push(current);
-            current = current.next;
-        }
-
-
-        // Sorting the array by data value
-        arr.sort((a, b) => {
-            if (a.data < b.data) {
-                return -1;
-            } else if (a.data > b.data) {
-                return 1;
-            } else {
-                return 0;
-            }
-        });
-
-
-        // Updating linked list with sorted nodes
-        this.head = arr[0];
-        this.tail = arr[arr.length - 1];
-        for (let i = 0; i < arr.length - 1; i++) {
-            arr[i].next = arr[i + 1];
-        }
-        arr[arr.length - 1].next = null;
-
-		this.shuffled = false; // shuffled özelliği false olarak ayarlanıyor
-	}
+    
+        
+    
+    }
 }
-			
+
+
 const photoList = new LinkedList();
-photoList.addPhoto("bopeep_1.jpg");
-photoList.addPhoto("bopeep_2.jpg");
-photoList.addPhoto("bopeep_3.jpg");
-photoList.addPhoto("bopeep_4.jpg");
-photoList.addPhoto("bopeep_5.jpg");
-photoList.addPhoto("bopeep_6.jpg");
-photoList.addPhoto("bopeep_7.jpg");
-photoList.addPhoto("bopeep_8.jpg");
-photoList.addPhoto("bopeep_9.jpg");
-photoList.addPhoto("bopeep_10.jpg");
-photoList.addPhoto("bopeep_11.jpg");
-photoList.addPhoto("bopeep_12.jpg");
-photoList.addPhoto("bopeep_13.jpg");
-photoList.addPhoto("bopeep_14.jpg");
-photoList.addPhoto("bopeep_15.jpg");
-photoList.addPhoto("bopeep_16.jpg");
+const piecesCount = 16;
+const fileInput = document.getElementById("file-input");
+fileInput.addEventListener("change", function() {
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+
+  reader.onload = function(event) {
+    const img = new Image();
+    img.src = event.target.result;
+    img.onload = function() {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const pieceWidth = img.width / 4;
+      const pieceHeight = img.height / 4;
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          const nodeCanvas = document.createElement("canvas");
+          nodeCanvas.width = pieceWidth;
+          nodeCanvas.height = pieceHeight;
+          const nodeCtx = nodeCanvas.getContext("2d");
+          nodeCtx.drawImage(canvas, j * pieceWidth, i * pieceHeight, pieceWidth, pieceHeight, 0, 0, pieceWidth, pieceHeight);
+          const nodeDataUrl = nodeCanvas.toDataURL();
+          photoList.addPhoto(nodeDataUrl);
+        }
+      }
+
+      photoList.displayPhotos("photo-container");
+    };
+  };
+});
 photoList.displayPhotos("photo-container");
 
 const shuffleBtn = document.getElementById("shuffle-btn");
@@ -170,9 +148,3 @@ shuffleBtn.addEventListener("click", function() {
     photoList.displayPhotos("photo-container");
 });
 
-const sortBtn = document.getElementById("sort-btn");
-sortBtn.addEventListener("click", function() {
-    photoList.sortPhotos();
-    photoList.displayPhotos("photo-container");
-});
-    
