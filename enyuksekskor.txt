@@ -1,0 +1,4 @@
+Ahmet,120
+Mehmet,90
+Ayşe,200
+Fatma,150

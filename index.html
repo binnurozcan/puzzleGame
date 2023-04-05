@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://kit.fontawesome.com/18de7401c2.js" crossorigin="anonymous"></script>
+        <meta charset="UTF-8">
+        <title>Puzzle Oyunu</title>
+        <style>
+            input{
+                display: none;
+            }
+
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                text-align: center;
+                
+            }
+
+
+            .top-banner {
+                background-color: #084510;
+                color: white;
+                padding: 10px;
+                text-align: center;
+            }
+
+            .top-banner2  {
+                background-color: #d2e3e1;
+                color: white;
+                padding: 10px;
+                text-align: center;
+            }
+            .score-banner{
+                font: bold 1.25em "Trebuchet MS", Verdana, Arial, Helvetica,
+                sans-serif;
+                background-color: #C1DAD7;
+                color: green;
+                padding: 10px;
+                text-align: center;
+            }
+            .scoreboard{
+    
+                margin-left:auto; 
+                margin-right:auto;
+        
+                width: 30%;
+                font: bold 1.25em "Trebuchet MS", Verdana, Arial, Helvetica,
+                sans-serif;
+                border: 20px solid #4CAF50;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+                text-align: left;
+                padding: 6px 6px 6px 12px;
+                background: #C1DAD7;
+                border-collapse: collapse;
+            }
+            .count{
+                font: bold 3em "Trebuchet MS", Verdana, Arial, Helvetica,
+                ans-serif;
+                background-color: #C1DAD7;
+                color: green;
+            }
+
+            .btn-group .button  {
+                font: bold 1.25em "Trebuchet MS", Verdana, Arial, Helvetica,
+                sans-serif;
+                letter-spacing: 3px;
+                background-color: #4CAF50; /* Green */
+                border: 1px solid green;
+                color: white;
+                padding: 30px 50px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                cursor: pointer;
+            }
+            .container {
+                text-align: center;
+            }
+    
+            .btn-group .button:not(:last-child) {
+                border-right: none; /* Prevent double borders */
+            }
+    
+            .btn-group .button:hover {
+                background-color: #3e8e41;
+      
+            }
+        </style>
+    </head>
+    <body>
+        <!--<div class="top-banner">
+            <h1>Puzzle Oyunu</h1>
+        </div>-->
+        <div class="top-banner2">
+            <div class="btn-group">
+                <button class="button" ><label for="file-input">
+                    <i class="fa fa-picture-o fa-xl" aria-hidden="true"></i>
+                    <input id="file-input" type="file"/>
+                  </label></button>
+                <button id="shuffle-btn" class="button">KARIŞTIR</button>
+                <button id="end-btn" class="button">BİTİR</button>
+                <a href= "#score-banner"><button  class="button">SKOR LISTESI</button></a>
+              </div>
+        </div>
+        <div class="container">        
+            <div class= "pcontainer"id="photo-container"></div>
+           <div class="count" id="move-count"></div>
+       </div>  
+       <div class=score-banner id="score-banner"><h2>EN YUKSEK SKOR </h2></div>      
+            <table class="scoreboard" >
+                <thead>
+                    <tr >
+                    <th>Player Name</th>
+                    <th>Score</th>
+                 </tr>
+                </thead>
+            <tbody id="player-list"></tbody>
+        </table>
+        <script src="skorlar.js"></script>             
+    <script src="linked-list.js"> </script>
+       
+    </body>
+    </html>
+    

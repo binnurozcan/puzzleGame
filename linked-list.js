@@ -9,7 +9,10 @@ class LinkedList {
     constructor() {
         this.head = null;
         this.tail = null;
-		this.selected = null; // selected özelliği eklendi		
+		this.selected = null; // selected özelliği eklendi	
+        this.moveCount = 0; // hamle sayısı özelliği eklendi
+        this.shuffled = false;	
+        
 	}
 
     addPhoto(photo) {
@@ -34,23 +37,6 @@ class LinkedList {
         while (current !== null) {
             const img = document.createElement("img");
             img.src = current.data;
-			// Fotoğrafın tıklanma olayı eklendi
-			img.addEventListener("click", () => {
-               
-				  if (this.selected === null) {
-						this.selected = img;
-						
-					} else {
-						const selectedImg = this.selected;
-						const temp = selectedImg.src;
-						selectedImg.src = img.src;
-						img.src = temp;
-						
-						this.selected = null;
-			
-					}
-                    
-			});
 
             const cell = document.createElement("td");
             cell.appendChild(img);
@@ -63,17 +49,40 @@ class LinkedList {
             }
 
             current = current.next;
+            
+            
+			// Fotoğrafın tıklanma olayı eklendi
+			img.addEventListener("click", () => {
+               
+                if (this.selected === null) {
+                    this.selected = img;
+                } else {
+                    const selectedImg = this.selected;
+                    const temp = selectedImg.src;
+                    selectedImg.src = img.src;
+                    img.src = temp;
+                    this.selected = null;
+                    this.moveCount++; // hamle sayısı artırılıyor
+                    const moveCountElement = document.getElementById("move-count");
+                    moveCountElement.innerHTML = this.moveCount.toString();
+                }
+                                
+            });
+
+            
         }
 
         container.innerHTML = "";
         container.appendChild(table);
 
         
+        
     }
 
     shufflePhotos() {		
 		let current = this.head;
 		let arr = [];
+        
 			
 		// Copying photo links to an array
 		while (current !== null) {
@@ -96,11 +105,12 @@ class LinkedList {
 			i++;
 		}
 			
-		this.shuffled = true; // shuffled özelliği true olarak ayarlanıyor
-    
+		this.shuffled = true; // shuffled özelliği true olarak ayarlanıyor 
         
-    
     }
+
+    
+
 }
 
 
@@ -108,43 +118,60 @@ const photoList = new LinkedList();
 const piecesCount = 16;
 const fileInput = document.getElementById("file-input");
 fileInput.addEventListener("change", function() {
-  const file = fileInput.files[0];
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
+    const playerName = window.prompt("Lütfen isminizi girin:");
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
 
-  reader.onload = function(event) {
-    const img = new Image();
-    img.src = event.target.result;
-    img.onload = function() {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      const pieceWidth = img.width / 4;
-      const pieceHeight = img.height / 4;
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
+    reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = function() {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const pieceWidth = img.width / 4;
+            const pieceHeight = img.height / 4;
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
 
-      for (let i = 0; i < 4; i++) {
-        for (let j = 0; j < 4; j++) {
-          const nodeCanvas = document.createElement("canvas");
-          nodeCanvas.width = pieceWidth;
-          nodeCanvas.height = pieceHeight;
-          const nodeCtx = nodeCanvas.getContext("2d");
-          nodeCtx.drawImage(canvas, j * pieceWidth, i * pieceHeight, pieceWidth, pieceHeight, 0, 0, pieceWidth, pieceHeight);
-          const nodeDataUrl = nodeCanvas.toDataURL();
-          photoList.addPhoto(nodeDataUrl);
-        }
-      }
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    const nodeCanvas = document.createElement("canvas");
+                    nodeCanvas.width = pieceWidth;
+                    nodeCanvas.height = pieceHeight;
+                    const nodeCtx = nodeCanvas.getContext("2d");
+                    nodeCtx.drawImage(canvas, j * pieceWidth, i * pieceHeight, pieceWidth, pieceHeight, 0, 0, pieceWidth, pieceHeight);
+                    const nodeDataUrl = nodeCanvas.toDataURL();
+                    photoList.addPhoto(nodeDataUrl);
+                }
+            }
 
-      photoList.displayPhotos("photo-container");
+            photoList.displayPhotos("photo-container");            
+        };
     };
-  };
+
+
+    const endBtn = document.getElementById("end-btn");
+    endBtn.addEventListener("click", function() {
+        const moveCount = photoList.moveCount;
+        alert("Kullanıcı adı: "+playerName +"\n" +"Hamle sayısı: "+moveCount);
+        
+        
+        
+    });
+    
 });
-photoList.displayPhotos("photo-container");
+
+
+
+
 
 const shuffleBtn = document.getElementById("shuffle-btn");
 shuffleBtn.addEventListener("click", function() {
     photoList.shufflePhotos();
     photoList.displayPhotos("photo-container");
 });
+
+
 
