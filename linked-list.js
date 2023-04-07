@@ -9,8 +9,8 @@ class LinkedList {
     constructor() {
         this.head = null;
         this.tail = null;
-		this.selected = null; // selected özelliği eklendi	
-        this.moveCount = 0; // hamle sayısı özelliği eklendi
+		this.selected = null; 
+        this.moveCount = 0; 
         this.shuffled = false;	
         
 	}
@@ -74,7 +74,6 @@ class LinkedList {
 
         container.innerHTML = "";
         container.appendChild(table);
-
         
         
     }
